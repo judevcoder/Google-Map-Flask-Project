@@ -2,8 +2,6 @@ from flask import *
 from flask_googlemaps import GoogleMaps
 from flask_googlemaps import  Map, icons
 import pandas as pd
-from BeautifulSoup import BeautifulStoneSoup
-import cgi
 import logging
 from pandas import DataFrame, read_excel
 import socket
@@ -25,16 +23,13 @@ data.set_index(['Index'], inplace=True)
 # data['Name'] = data['Name'].apply(lambda x: '<a href="http://127.0.0.1:5000/item/<idx>">Name</a>')
 data.index.name = None
 
-# def HTMLEntitiesToUnicode(text):
-#     """Converts HTML entities to unicode.  For example '&amp;' becomes '&'."""
-#     text = unicode(BeautifulStoneSoup(text, convertEntities=BeautifulStoneSoup.ALL_ENTITIES))
-#     return text
-#
+temp_data = data
+
 for idx, val in enumerate(data['Name']):
     cell = data['Name'][idx+1]
-    html_cell = '<a href="#">' + cell + '</a>'
-    html_cell.replace('&lt;', '<')
-    data['Name'][idx + 1] = html_cell.replace('&lt;', '<').replace('&gt;', '>') # HTMLEntitiesToUnicode(html_cell)
+    param = idx + 1
+    html_cell = '<a href="/item/' + str(param) + '">' + cell + '</a>'
+    data['Name'][idx + 1] = html_cell
 
 
 data_table = data
@@ -111,14 +106,19 @@ def mapview():
         markers=red_markers
     )
 
-    return render_template('categoriedmap.html', greenmap=greenmap, yellowmap=yellowmap, redmap=redmap, tables=[data_table.to_html(classes='data_table')], titles=['Table'])
+    return render_template('categoriedmap.html', greenmap=greenmap, yellowmap=yellowmap, redmap=redmap, tables=[data_table.to_html(classes='data_table').replace('&lt;', '<').replace('&gt;', '>')], titles=['Table'])
 
 @app.route('/item/<idx>')
 def itemdetail(idx):
-    df = data
-    namefield = df['Name'].unique()
-    levelfield = df['Level'].unique()
+    namefields = []
+    df = temp_data
+    namefield_link = df['Name'].unique()
+    for link in namefield_link:
+        namefields.append(re.search('>(.*?)<', link).group(1).strip())
+    namefield_series = pd.Series(namefields)
 
+    levelfield = df['Level'].unique()
+    namefield = df['Name'].unique()
     prob1 = df['Prob 1']
     prob2 = df['Prob 2']
     prob3 = df['Prob 3']
@@ -168,7 +168,7 @@ def itemdetail(idx):
     fvalues = [f1, f2, f3, f4]
     current_name = df['Name'][int(idx)]
     current_level= df['Level'][int(idx)]
-    name_json_array = json.dumps(list(df['Name']))
+    name_json_array = json.dumps(list(pd.Series(namefields)))
     level_json_array = json.dumps(list(df['Level']))
     mymap = Map(
         identifier="mymap",
@@ -190,6 +190,12 @@ def itemdetail(idx):
                                prob3=prob3, prob4=prob4, probnames=probnames, mymap=mymap, lmh1=lmh1,
                                lmh2=lmh2, lmh3=lmh3, lmh4=lmh4, elements=elements, ros=ros, pis=pis, fnames=fnames,
                                fvalues=fvalues)
+def _clean_text(self, text):
+    text = text.replace("\n", " ").replace("\t", " ").replace("\r", " ")
+    text = re.sub("&nbsp;", " ", text).strip()
+
+    return re.sub(r'\s+', ' ', text)
 
 if __name__ == '__main__':
     app.run()
+
