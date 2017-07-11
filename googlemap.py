@@ -17,28 +17,24 @@ app.config['GOOGLEMAPS_KEY'] = "AIzaSyA2DrGtd4DK_tjmIdVtRwBU5rqW_OnuqeA"
 # you can also pass the key here if you prefer
 GoogleMaps(app, key="AIzaSyA2DrGtd4DK_tjmIdVtRwBU5rqW_OnuqeA")
 
-data = pd.read_excel('/home/superstar/workspace/flask/googlemap/SampleCSV.xlsx')
-data['Index'] = data.index + 1
-data.set_index(['Index'], inplace=True)
-# data['Name'] = data['Name'].apply(lambda x: '<a href="http://127.0.0.1:5000/item/<idx>">Name</a>')
-data.index.name = None
-
-temp_data = data
-
-for idx, val in enumerate(data['Name']):
-    cell = data['Name'][idx+1]
-    param = idx + 1
-    html_cell = '<a href="/item/' + str(param) + '">' + cell + '</a>'
-    data['Name'][idx + 1] = html_cell
-
-
-data_table = data
 
 @app.route('/')
 # def hello_world():
 #     return 'Hello World!'
 
 def mapview():
+    data = pd.read_excel('/home/superstar/workspace/flask/googlemap/SampleCSV.xlsx')
+    data['Index'] = data.index + 1
+    data.set_index(['Index'], inplace=True)
+    data.index.name = None
+
+    for idx, val in enumerate(data['Name']):
+        cell = data['Name'][idx + 1]
+        param = idx + 1
+        html_cell = '<a href="/item/' + str(param) + '">' + cell + '</a>'
+        data['Name'][idx + 1] = html_cell
+
+    data_table = data
 
     green_markers = []
     red_markers = []
@@ -110,15 +106,12 @@ def mapview():
 
 @app.route('/item/<idx>')
 def itemdetail(idx):
-    namefields = []
-    df = temp_data
-    namefield_link = df['Name'].unique()
-    for link in namefield_link:
-        namefields.append(re.search('>(.*?)<', link).group(1).strip())
-    namefield_series = pd.Series(namefields)
-
-    levelfield = df['Level'].unique()
+    df = pd.read_excel('/home/superstar/workspace/flask/googlemap/SampleCSV.xlsx')
+    df['Index'] = df.index + 1
+    df.set_index(['Index'], inplace=True)
+    df.index.name = None
     namefield = df['Name'].unique()
+    levelfield = df['Level'].unique()
     prob1 = df['Prob 1']
     prob2 = df['Prob 2']
     prob3 = df['Prob 3']
@@ -168,7 +161,7 @@ def itemdetail(idx):
     fvalues = [f1, f2, f3, f4]
     current_name = df['Name'][int(idx)]
     current_level= df['Level'][int(idx)]
-    name_json_array = json.dumps(list(pd.Series(namefields)))
+    name_json_array = json.dumps(list(df['Name']))
     level_json_array = json.dumps(list(df['Level']))
     mymap = Map(
         identifier="mymap",
