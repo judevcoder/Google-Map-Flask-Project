@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+    {{ greenmap.js }}
+    {{ yellowmap.js }}
+    {{ redmap.js }}
+    <h1>System</h1><hr>
+    <div class="container">
+        <div class="col-md-4">{{ greenmap.html }}</div>
+        <div class="col-md-4">{{ yellowmap.html }}</div>
+        <div class="col-md-4">{{ redmap.html }}</div>
+    </div><br>
+    <h1>Table</h1>
+    {% for table in tables %}
+        {{ table|safe }}
+    {% endfor %}
+
+    <script>
+
+    </script>
+{% endblock %}
+
+

@@ -1,0 +1,7 @@
+flask-googlemaps
+flask-excel
+pyexcel-xlsx
+xlrd
+
+
+https://stackoverflow.com/questions/3192955/how-to-change-markers-on-zoom-change-in-google-map-api

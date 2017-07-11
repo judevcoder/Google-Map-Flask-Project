@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+{% block content %}
+    {{ mymap.js }}
+    <div class="container">
+        <div class="col-md-5">
+            <div id="dropdown" class="content_first">
+                <li>
+                    <ul>
+                        <select name="fieldnames" class="field-select">
+                            <option value="" disabled="disabled" selected="selected">Name</option>
+                            {% for name in namefield %}
+                                {% if current_name == name %}
+                                    <option value="{{ name }}" selected>{{ name }}</option>
+                                {% else %}
+                                    <option value="{{ name }}">{{ name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </ul>
+                    <ul>
+                        <select class="level-select">
+                            <option value="" disabled="disabled" selected="selected">Level</option>
+                            {% for level in levelfield %}
+                                {% if current_level == level %}
+                                    <option value="{{ level }}" selected>{{ level }}</option>
+                                {% else %}
+                                    <option value="{{ level }}">{{ level }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </ul>
+                </li>
+            </div>
+            <div id="map">{{ mymap.html }}</div>
+            <div id="ros">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>R1</th>
+                            <th>R2</th>
+                            <th>O</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {% for ro in ros %}
+                            <td>{{ ro }}</td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="col-xs-12">
+                <ul class="list-inline">
+                    <li>
+                        <h1>1</h1>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>L1</th>
+                                <th>M1</th>
+                                <th>H1</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                {% for lmh in lmh1 %}
+                                    <td>{{ lmh }}</td>
+                                {% endfor %}
+                            </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                    <li>
+                        <h1>2</h1>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>L2</th>
+                                <th>M2</th>
+                                <th>H2</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                {% for lmh in lmh2 %}
+                                    <td>{{ lmh }}</td>
+                                {% endfor %}
+                            </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                    <li>
+                        <h1>3</h1>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>L3</th>
+                                <th>M3</th>
+                                <th>H3</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                {% for lmh in lmh3 %}
+                                    <td>{{ lmh }}</td>
+                                {% endfor %}
+                            </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                    <li>
+                        <h1>4</h1>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>L4</th>
+                                <th>M4</th>
+                                <th>H4</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                {% for lmh in lmh4 %}
+                                    <td>{{ lmh }}</td>
+                                {% endfor %}
+                            </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                </ul>
+                <div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>P5</th>
+                            <th>I1</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            {% for pi in pis %}
+                                <td>{{ pi }}</td>
+                            {% endfor %}
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <canvas id="chart_prob" width="600" height="400" ></canvas>
+            <div id="element">
+                <ul>
+                    <li>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th>C</th>
+                                <th>D</th>
+                                <th>E</th>
+                                <th>A1</th>
+                                <th>A2</th>
+                                <th>A3</th>
+                                <th>F1</th>
+                                <th>F2</th>
+                                <th>F3</th>
+                                <th>F4</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                {% for element in elements %}
+                                    <td>{{ element }}</td>
+                                {% endfor %}
+                            </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                </ul>
+                <div></div>
+            </div>
+            <canvas id="chart_f" width="600" height="400" ></canvas>
+        </div>
+    </div>
+
+    <script>
+       // bar chart data
+       var barDataprob = {
+       labels : [{% for probname in probnames %}
+                      "{{probname}}",
+                  {% endfor %}],
+       datasets : [
+          {
+                fillColor: "rgba(151,187,205,0.2)",
+                strokeColor: "rgba(151,187,205,1)",
+                pointColor: "rgba(151,187,205,1)",
+                data : [
+                      {{prob1[idx|int]}}, {{ prob2[idx|int] }}, {{ prob3[idx|int] }}, {{ prob4[idx|int] }}
+
+                ]
+          }
+          ]
+       }
+       // get bar chart canvas
+       var mychartprob = document.getElementById("chart_prob").getContext("2d");
+
+       steps = 5
+       max = 5
+       // draw bar chart
+       new Chart(mychartprob).Bar(barDataprob, {
+            scaleOverride: true,
+            scaleSteps: steps,
+            scaleStepWidth: Math.ceil(max / steps),
+            scaleStartValue: 0,
+            scaleShowVerticalLines: true,
+            scaleShowGridLines : true,
+            barShowStroke : true,
+            scaleShowLabels: true
+       });
+
+    </script>
+
+    <script>
+       // bar chart data
+       var barDataf = {
+       labels : [{% for fname in fnames %}
+                      "{{fname}}",
+                  {% endfor %}],
+       datasets : [
+          {
+                fillColor: "rgba(151,187,205,0.2)",
+                strokeColor: "rgba(151,187,205,1)",
+                pointColor: "rgba(151,187,205,1)",
+
+                data : [
+                    {% for fvalue in fvalues %}
+                    {{ fvalue }},
+                    {% endfor %}
+                ]
+          }
+          ]
+       }
+       // get bar chart canvas
+       var mychartf = document.getElementById("chart_f").getContext("2d");
+
+       steps = 5
+       max = 20
+       // draw bar chart
+       new Chart(mychartf).Bar(barDataf, {
+            scaleOverride: true,
+            scaleSteps: steps,
+            scaleStepWidth: Math.ceil(max / steps),
+            scaleStartValue: 0,
+            scaleShowVerticalLines: true,
+            scaleShowGridLines : true,
+            barShowStroke : true,
+            scaleShowLabels: true,
+            overrideRotation: 90
+       });
+
+    </script>
+
+    <script>
+        debugger;
+        var name_json_array = "{{ name_json_array }}";
+        var level_json_array = "{{ level_json_array }}";
+
+        name_json_array = name_json_array.replace(/&#34;/g, '"');
+
+        var name_array = JSON.parse(name_json_array);
+        var level_array = JSON.parse(level_json_array);
+
+        $( document ).ready(function() {
+            var $text = $('.field-select').val();
+            var $level = $('.level-select').val();
+            var level_select_options_string = '';
+
+            for(index=0; index<name_array.length; index++ ) {
+                if (name_array[index] == $text) {
+                    if ($level == level_array[index]) {
+                        level_select_options_string += '<option value="' + (index + 1) + '" selected>' + level_array[index] + '</option>';
+                    }
+                    else {
+                        level_select_options_string += '<option value="' + (index + 1) + '">' + level_array[index] + '</option>';
+                    }
+                }
+            }
+
+            $('.level-select').html(level_select_options_string);
+        });
+
+        $('.field-select').on('change', function() {
+            for(index=0; index<name_array.length; index++ ) {
+                if (name_array[index] == $(this).val()) {
+                   window.location.replace("/item/" + (index + 1));
+                }
+            }
+        });
+
+        $('.level-select').on('change', function() {
+            window.location.replace("/item/" + $(this).val());
+        });
+    </script>
+
+{% endblock %}

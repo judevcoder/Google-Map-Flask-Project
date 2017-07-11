@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/base.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/item.css">
+    <script src="/static/js/chart.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+    <div id="header" class="container">
+        <div class="col-md-8" id="logo">
+            <a href="http://127.0.0.1:5000"><img src="../static/images/logo.jpg"></a>
+        </div>
+        <div id="menu" class="topnav col-md-4">
+            <ul class="nav navbar-nav">
+                <li><a class="active" href="http://127.0.0.1:5000">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+
+    {% block content %}{% endblock %}
+
+</body>
+</html>
