@@ -12,80 +12,15 @@
         </ul><br>
         <h1>Table</h1>
         <div id="example_wrapper" class="dataTables_wrapper table-responsive">
-            <div class="dataTables_length" id="example_length">
-                <label>Show
-                    <select name="example_length" aria-controls="example" class="">
-                        <option value="10">10</option>
-                        <option value="25">25</option><option value="50">50</option>
-                        <option value="100">100</option>
-                    </select> entries
-                </label>
-            </div>
-            <div id="example_filter" class="dataTables_filter">
-                <label>Search:<input type="search" class="" placeholder="" aria-controls="example"></label>
-            </div>
-{#            <table>#}
-{#                <thead>#}
-{#                    <tr role="row">#}
-{#                        {% for table in tables %}#}
-{#                            {% for value in row %}#}
-{#                            <th class="sorting_asc" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 116px;">{{ row }}</th>#}
-{#                            {% endfor %}#}
-{#                            <TR>#}
-{#                               <TD class="c1"><IMG src="favicon.ico"></TD>#}
-{#                               <TD class="c2">{{table.Name}}</TD>#}
-{#                               <TD class="c3">{{table.Level}}</TD>#}
-{#                               <TD class="c4"><SPAN>{{table.L1}}</SPAN></TD>#}
-{#                               <TD class="c5"><SPAN>{{table.M1}}</SPAN></TD>#}
-{#                            </TR>#}
-{#                        {% endfor %}#}
-{#                    </tr>#}
-{#                </thead>#}
-{#            </table>#}
             {% for table in tables %}
                 {{ table|safe }}
             {% endfor %}
-            <div class="dataTable_paginate paging_simple_numbers" id="example_paginate"></div>
         </div>
     </div>
     <script>
-        var table = $('table');
-
-        $('.sortable th')
-            .wrapInner('<span title="sort this column"/>')
-            .each(function(){
-
-                var th = $(this),
-                    thIndex = th.index(),
-                    inverse = false;
-
-                th.click(function(){
-
-                    table.find('td').filter(function(){
-
-                        return $(this).index() === thIndex;
-
-                    }).sortElements(function(a, b){
-
-                        if( $.text([a]) == $.text([b]) )
-                            return 0;
-
-                        return $.text([a]) > $.text([b]) ?
-                            inverse ? -1 : 1
-                            : inverse ? 1 : -1;
-
-                    }, function(){
-
-                        // parentNode is the element we want to move
-                        return this.parentNode;
-
-                    });
-
-                    inverse = !inverse;
-
-                });
-
-            });
+        $(document).ready(function() {
+        $('#example').DataTable();
+    } );
     </script>
 {% endblock %}
 

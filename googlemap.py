@@ -111,7 +111,7 @@ def mapview():
         changed_column_names.append(column_name_string)
     # data.columns = changed_column_names
     t = et.fromstring(data.to_html(classes='table').replace('&lt;', '<').replace('&gt;', '>'))
-    t.set('id', 'mytable')
+    t.set('id', 'example')
     table = et.tostring(t)
 
     return render_template('categoriedmap.html', tables=[table], titles=['Table'],
