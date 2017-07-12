@@ -5,7 +5,7 @@ table.dataframe, .dataframe th, .dataframe td {
   text-align:left;
   padding: 10px;
   margin-bottom: 40px;
-  font-size: 0.9em;
+  font-size:  15px;
 }
 
 .table th {
@@ -20,7 +20,9 @@ table.sortable thead {
     font-weight: bold;
     cursor: default;
 }
-
+.container{
+    overflow: hidden;
+}
 
 tr:nth-child(odd)		{ background-color:#eee; }
 tr:nth-child(even)	{ background-color:#fff; }
@@ -46,11 +48,13 @@ ul {list-style-type:none;}
 @media screen and (max-width: 768px){
     ul li{
         padding-top: 40px;
+        overflow: hidden;
     }
 }
 
 @media screen and (max-width: 992px){
     ul li{
-        padding-left: 40px;
+        padding-left: 12px;
+        overflow: hidden;
     }
 }

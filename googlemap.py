@@ -2,10 +2,6 @@ from flask import *
 from flask_googlemaps import GoogleMaps
 from flask_googlemaps import  Map, icons
 import pandas as pd
-import logging
-from pandas import DataFrame, read_excel
-import socket
-import sys
 import re
 import json
 from xml.etree import ElementTree as et
@@ -28,7 +24,6 @@ def mapview():
     data['Index'] = data.index + 1
     data.set_index(['Index'], inplace=True)
     data.index.name = None
-    changed_column_names = []
 
     for idx, val in enumerate(data['Name']):
         cell = data['Name'][idx + 1]
@@ -50,6 +45,7 @@ def mapview():
         lon = data['Lon'][idx+1]
 
         if color == 'Green':
+
             green_geo.append([lat, lon])
             green_markers.append({
                     'icon': 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
@@ -87,7 +83,6 @@ def mapview():
         varname="yellowmap",
         lat=yellow_geo[0][0],
         lng=yellow_geo[0][1],
-        zoom=default_zoom,
         markers=yellow_markers
     )
 
@@ -96,20 +91,9 @@ def mapview():
         varname="redmap",
         lat=red_geo[0][0],
         lng=red_geo[0][1],
-        zoom=default_zoom,
         markers=red_markers
     )
 
-    column_names = list(data.columns.values)
-    # data.columns = []
-    for column_name in column_names:
-        if column_name == 'O':
-            column_name_string = '<a href="#" class="sortable color">' + column_name + '</a>'
-        else:
-            column_name_string = '<a href="#" class="sortable">' + column_name + '</a>'
-        # data.columns.append(data.columns(column_name_string))
-        changed_column_names.append(column_name_string)
-    # data.columns = changed_column_names
     t = et.fromstring(data.to_html(classes='table').replace('&lt;', '<').replace('&gt;', '>'))
     t.set('id', 'example')
     table = et.tostring(t)

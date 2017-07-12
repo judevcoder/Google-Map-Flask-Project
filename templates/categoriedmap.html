@@ -6,10 +6,11 @@
     <h1>System</h1><hr>
     <div class="container">
         <ul class="container">
-            <li class="col-sm-4">{{ greenmap.html }}</li>
-            <li class="col-sm-4">{{ yellowmap.html }}</li>
-            <li class="col-sm-4">{{ redmap.html }}</li>
-        </ul><br>
+            <li class="col-md-4 col-sm-4 map">{{ greenmap.html }}</li>
+            <li class="col-md-4 col-sm-4 map">{{ yellowmap.html }}</li>
+            <li class="col-md-4 col-sm-4 map">{{ redmap.html }}</li>
+        </ul>
+        <br>
         <h1>Table</h1>
         <div id="example_wrapper" class="dataTables_wrapper table-responsive">
             {% for table in tables %}
