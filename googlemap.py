@@ -8,6 +8,7 @@ import socket
 import sys
 import re
 import json
+from xml.etree import ElementTree as et
 
 app = Flask(__name__, template_folder="templates")
 
@@ -23,18 +24,17 @@ GoogleMaps(app, key="AIzaSyA2DrGtd4DK_tjmIdVtRwBU5rqW_OnuqeA")
 #     return 'Hello World!'
 
 def mapview():
-    data = pd.read_excel('/home/superstar/workspace/flask/googlemap/SampleCSV.xlsx')
+    data = pd.read_excel('/home/superstar/workspace/flask/1_googlemap_2/SampleCSV.xlsx')
     data['Index'] = data.index + 1
     data.set_index(['Index'], inplace=True)
     data.index.name = None
+    changed_column_names = []
 
     for idx, val in enumerate(data['Name']):
         cell = data['Name'][idx + 1]
         param = idx + 1
         html_cell = '<a href="/item/' + str(param) + '">' + cell + '</a>'
         data['Name'][idx + 1] = html_cell
-
-    data_table = data
 
     green_markers = []
     red_markers = []
@@ -43,13 +43,11 @@ def mapview():
     green_geo = []
     yellow_geo = []
     red_geo = []
-
-
+    default_zoom = 1
 
     for idx, color in enumerate(data['O']):
         lat = data['Lat'][idx+1]
         lon = data['Lon'][idx+1]
-
 
         if color == 'Green':
             green_geo.append([lat, lon])
@@ -80,7 +78,7 @@ def mapview():
         varname="greenmap",
         lat=green_geo[0][0],
         lng=green_geo[0][1],
-        zoom=15,
+        zoom=default_zoom,
         markers=green_markers
     )
 
@@ -89,7 +87,7 @@ def mapview():
         varname="yellowmap",
         lat=yellow_geo[0][0],
         lng=yellow_geo[0][1],
-        zoom=15,
+        zoom=default_zoom,
         markers=yellow_markers
     )
 
@@ -98,15 +96,30 @@ def mapview():
         varname="redmap",
         lat=red_geo[0][0],
         lng=red_geo[0][1],
-        zoom=15,
+        zoom=default_zoom,
         markers=red_markers
     )
 
-    return render_template('categoriedmap.html', greenmap=greenmap, yellowmap=yellowmap, redmap=redmap, tables=[data_table.to_html(classes='data_table').replace('&lt;', '<').replace('&gt;', '>')], titles=['Table'])
+    column_names = list(data.columns.values)
+    # data.columns = []
+    for column_name in column_names:
+        if column_name == 'O':
+            column_name_string = '<a href="#" class="sortable color">' + column_name + '</a>'
+        else:
+            column_name_string = '<a href="#" class="sortable">' + column_name + '</a>'
+        # data.columns.append(data.columns(column_name_string))
+        changed_column_names.append(column_name_string)
+    # data.columns = changed_column_names
+    t = et.fromstring(data.to_html(classes='table').replace('&lt;', '<').replace('&gt;', '>'))
+    t.set('id', 'mytable')
+    table = et.tostring(t)
+
+    return render_template('categoriedmap.html', tables=[table], titles=['Table'],
+                           greenmap=greenmap, yellowmap=yellowmap, redmap=redmap)
 
 @app.route('/item/<idx>')
 def itemdetail(idx):
-    df = pd.read_excel('/home/superstar/workspace/flask/googlemap/SampleCSV.xlsx')
+    df = pd.read_excel('/home/superstar/workspace/flask/1_googlemap_2/SampleCSV.xlsx')
     df['Index'] = df.index + 1
     df.set_index(['Index'], inplace=True)
     df.index.name = None

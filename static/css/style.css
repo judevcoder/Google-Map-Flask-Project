@@ -8,9 +8,17 @@ table.dataframe, .dataframe th, .dataframe td {
   font-size: 0.9em;
 }
 
-.data_table th {
+.table th {
     background-color: #add8e6;
     color: black;
+}
+
+.table th:first-child { display: none; }
+table.sortable thead {
+    background-color:#eee;
+    color:#666666;
+    font-weight: bold;
+    cursor: default;
 }
 
 
@@ -19,3 +27,30 @@ tr:nth-child(even)	{ background-color:#fff; }
 
 tr:hover            { background-color: #ffff99;}
 
+.google-maps {
+    position: relative;
+    padding-bottom: 75%; // This is the aspect ratio
+    height: 0;
+    overflow: hidden;
+}
+.google-maps iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+ul {list-style-type:none;}
+
+@media screen and (max-width: 768px){
+    ul li{
+        padding-top: 40px;
+    }
+}
+
+@media screen and (max-width: 992px){
+    ul li{
+        padding-left: 40px;
+    }
+}
