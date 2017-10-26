@@ -83,7 +83,8 @@ def mapview():
         varname="yellowmap",
         lat=yellow_geo[0][0],
         lng=yellow_geo[0][1],
-        markers=yellow_markers
+        markers=yellow_markers,
+        zoom=default_zoom
     )
 
     redmap = Map(
@@ -91,7 +92,8 @@ def mapview():
         varname="redmap",
         lat=red_geo[0][0],
         lng=red_geo[0][1],
-        markers=red_markers
+        markers=red_markers,
+        zoom=default_zoom
     )
 
     t = et.fromstring(data.to_html(classes='table').replace('&lt;', '<').replace('&gt;', '>'))
